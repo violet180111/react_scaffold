@@ -1,0 +1,91 @@
+module.exports = {
+  env: {
+    browser: true,
+    commonjs: true,
+    es6: true,
+    node: true,
+  },
+  extends: [
+    'standard-with-typescript',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    createDefaultProgram: true,
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 'latest',
+    project: 'tsconfig.json',
+    sourceType: 'module',
+    tsconfigRootDir: './',
+  },
+  plugins: ['html', 'react', 'react-hooks', '@typescript-eslint'],
+  root: true,
+  rules: {
+    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/no-inferrable-types': ['off'],
+    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/quotes': ['error', 'single'],
+    '@typescript-eslint/semi': ['error', 'always'],
+    '@typescript-eslint/space-before-function-paren': ['error', 'never'],
+    '@typescript-eslint/strict-boolean-expressions': ['off'],
+    '@typescript-eslint/triple-slash-reference': ['off'],
+    '@typescript-eslint/member-delimiter-style': [
+      'error',
+      {
+        multiline: {
+          delimiter: 'semi',
+          requireLast: true,
+        },
+        singleline: {
+          delimiter: 'semi',
+          requireLast: false,
+        },
+      },
+    ],
+    'eol-last': ['error', 'always'],
+    'jsx-quotes': ['error', 'prefer-double'],
+    'react/react-in-jsx-scope': ['off'],
+    'react/no-unknown-property': [
+      'error',
+      {
+        ignore: ['css'],
+      },
+    ],
+    'lines-between-class-members': ['error', 'always'],
+    'multiline-ternary': ['off'],
+    'no-async-promise-executor': ['off'],
+    'no-console': ['off'],
+    'no-extend-native': ['off'],
+    'no-extra-semi': 'error',
+    'no-new': ['off'],
+    'no-proto': ['off'],
+    'no-return-assign': ['off'],
+    'no-sequences': ['off'],
+    'no-tabs': ['off'],
+    'no-unreachable': ['off'],
+    'no-useless-constructor': ['off'],
+    'no-var': ['error'],
+    'object-curly-spacing': ['error', 'always'],
+    'operator-linebreak': ['error', 'before'],
+    'sort-keys': [
+      'error',
+      'asc',
+      {
+        caseSensitive: false,
+        natural: true,
+      },
+    ],
+    'space-before-function-paren': ['error', 'never'],
+    'switch-colon-spacing': ['error'],
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+};
