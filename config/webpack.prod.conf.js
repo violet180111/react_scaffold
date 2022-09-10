@@ -1,10 +1,10 @@
+const { resolve } = require('path');
 const { merge } = require('webpack-merge');
 const threadLoader = require('thread-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { resolve } = require('path');
 const resolveDir = (path) => resolve(__dirname, path);
 const baseWebpackConfig = require('./webpack.base.conf');
 const { getCssRule, getJsRule } = require('./getBaseConfig');
@@ -36,7 +36,7 @@ module.exports = merge(baseWebpackConfig, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'assets/css/[name].[hash:8].css',
+      filename: 'assets/css/[name].[contenthash:8].css',
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'disabled', // 不启动展示打包报告的http服务器

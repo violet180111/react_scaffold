@@ -6,7 +6,7 @@ module.exports = {
   entry: resolveDir('../src/index.tsx'),
   output: {
     path: resolveDir('../dist'),
-    filename: 'assets/js/[name].[fullhash:8].js',
+    filename: 'assets/js/[name].[contenthash:8].js',
     clean: true,
   },
   module: {
@@ -17,7 +17,7 @@ module.exports = {
         generator: {
           // 输出文件位置以及文件名
           // [ext] 自带 "." 这个与 url-loader 配置不同
-          filename: 'static/images/[name][fullhash:8][ext]',
+          filename: 'static/images/[name][contenthash:8][ext]',
         },
         parser: {
           dataUrlCondition: {
@@ -30,7 +30,7 @@ module.exports = {
         type: 'asset',
         generator: {
           // 输出文件位置以及文件名
-          filename: 'static/fonts/[name][fullhash:8][ext]',
+          filename: 'static/fonts/[name][contenthash:8][ext]',
         },
         parser: {
           dataUrlCondition: {

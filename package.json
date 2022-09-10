@@ -2,7 +2,7 @@
   "name": "react_scaffold",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.tsx",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --config config/webpack.dev.conf.js",
     "build": "cross-env NODE_ENV=production IS_GEN_ANALYZ=false webpack --progress --config config/webpack.prod.conf.js",
