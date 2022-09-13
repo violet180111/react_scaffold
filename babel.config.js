@@ -48,5 +48,6 @@ module.exports = {
         useESModules: false,
       },
     ],
-  ],
+    ENV === 'development' && 'react-refresh/babel',
+  ].filter(Boolean),
 };
