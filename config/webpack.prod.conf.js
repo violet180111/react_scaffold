@@ -23,11 +23,16 @@ const configFilenames = [
   '../tsconfig.json',
 ];
 
-// 多进程打包构建
+/**
+ * @see: https://github.com/webpack-contrib/thread-loader
+ * @description: 多进程打包构建
+ * @param: workers - 线程实例数量
+ * @param: workerParallelJobs - 每个线程可并发执行的最大任务数
+ */
 threadLoader.warmup(
   {
-    workers: 2, // 线程实例
-    workerParallelJobs: 50, // 每个线程可并发执行的最大任务数
+    workers: 2,
+    workerParallelJobs: 50,
   },
   [
     // 子进程中需要预加载的 node 模块
@@ -35,6 +40,67 @@ threadLoader.warmup(
   ],
 );
 
+/**
+ * @param: mode - 指明是开发环境还是生产环境
+ * @param: module.rules - 模块构建规则
+ * @param: module.rules.test - 文件名匹配正则
+ * @param: module.rules.exclude - 要排除的文件
+ * @param: module.rules.use - 要使用的loader
+ * @param: plugins[0] - MiniCssExtractPlugin - 抽离css为单独文件 由于SpeedMeasurePlugin的某些bug，需要在smp.wrap执行后才能往plugins加MiniCssExtractPlugin
+ * @see: https://github.com/webpack-contrib/mini-css-extract-plugin
+ * {
+ *   filename: 生成文件路径 + 文件名
+ * }
+ * @param: plugins[1] - CompressionPlugin - 用于gizp压缩
+ * @see: https://github.com/webpack-contrib/compression-webpack-plugin
+ * {
+ *   test: 文件名匹配正则
+ *   filename: 生成文件路径 + 文件名
+ *   algorithm: 压缩格式,默认是gzip
+ *   threshold: 只有大小大于该值的资源会被处理。默认值是 10k
+ *   minRatio: 压缩率,默认值是 0.8
+ * }
+ * @param: plugins[2] - CopyPlugin - 文件复制
+ * @see: https://github.com/webpack-contrib/copy-webpack-plugin
+ * {
+ *   from: 要copy的文件
+ *   to: copy到哪里
+ *   filter: 排除文件，
+ * }
+ * @param: plugins[3] - BundleAnalyzerPlugin - 分析打包文件大小、占比情况、各文件 Gzipped 后的大小、模块包含关系、依赖项等
+ * @see: https://github.com/webpack-contrib/webpack-bundle-analyzer
+ * {
+ *   analyzerMode - 是否启动打包报告的http服务器
+ *   generateStatsFile - 是否生成stats.json文件
+ * }
+ * @param: optimization.runtimeChunk - 将运行时代码单独打包成一个文件
+ * @param: optimization.minimize - 将告知 webpack 使用 TerserPlugin 或其它在 optimization.minimizer定义的插件压缩代码
+ * @param: optimization.minimizer - 允许你通过提供一个或多个定制过的 TerserPlugin 实例，覆盖默认压缩工具(minimizer)
+ * @param: optimization.minimizer[0] - CssMinimizerPlugin - 压缩css代码
+ * @see: https://github.com/webpack-contrib/css-minimizer-webpack-plugin
+ * @param: optimization.minimizer[1] - TerserPlugin - 压缩js代码
+ * @see: https://github.com/webpack-contrib/terser-webpack-plugin
+ * {
+ *   parallel: 开启多线程压缩
+ *   terserOptions.compress.pure_funcs 删除某些代码例如 console.log
+ * }
+ * @param: splitChunks.cacheGroups.common - 提取页面公共代码
+ * @param: splitChunks.cacheGroups.vendors - 提取node_modules代码
+ * @param: splitChunks.cacheGroups.xxx.name - 生成的文件名字
+ * @param: splitChunks.cacheGroups.xxx.chunks - 选择哪些 chunk 进行优化 一般写all 对同步和异步模块都进行抽离
+ * @param: splitChunks.cacheGroups.xxx.minChunks - 被引用的最小次数
+ * @param: splitChunks.cacheGroups.xxx.maxInitialRequests - 入口点的最大并行请求数。
+ * @param: splitChunks.cacheGroups.xxx.minSize - 生成 chunk 的最小体积
+ * @param: splitChunks.cacheGroups.xxx.priority - 提取优先级
+ * @param: splitChunks.cacheGroups.xxx.enforce - 忽略 splitChunks.minSize、splitChunks.minChunks、splitChunks.maxAsyncRequests 和 splitChunks.maxInitialRequests 选项，并始终为此缓存组创建 chunk
+ * @param: splitChunks.cacheGroups.xxx.reuseExistingChunk - 表示是否使用已有的 chunk，true 则表示如果当前的 chunk 包含的模块已经被抽取出去了，那么将不会重新生成新的
+ * @param: cache.type - 缓存位置，生产环境一般是缓存到文件系统以便加快打包速度
+ * @param: cache.buildDependencies.config - 配置文件发生改变时重新构建并生成缓存
+ * @param: performance - webpack 如何通知「资源(asset)和入口起点超过指定文件限制」
+ * @param: performance.hints - 性能提示形式
+ * @param: performance.maxAssetSize - 根据单个资源体积(单位: bytes)，控制 webpack 生成性能提示
+ * @param: performance.maxEntrypointSize - 根据入口起点的最大体积，控制 webpack 生成性能提示
+ */
 /** @type {import('webpack').Configuration} wepack配置代码提示 */
 const config = merge(baseWebpackConfig, {
   mode: 'production',
@@ -43,84 +109,79 @@ const config = merge(baseWebpackConfig, {
   },
   plugins: [
     new CompressionPlugin({
-      test: /.(js|css)$/, // 只生成css,js压缩文件
-      filename: '[path][base].gz', // 文件命名
-      algorithm: 'gzip', // 压缩格式,默认是gzip
-      test: /.(js|css)$/, // 只生成css,js压缩文件
-      threshold: 10240, // 只有大小大于该值的资源会被处理。默认值是 10k
-      minRatio: 0.8, // 压缩率,默认值是 0.8
+      test: /.(js|css)$/,
+      filename: '[path][base].gz',
+      algorithm: 'gzip',
+      threshold: 10240,
+      minRatio: 0.8,
     }),
     new CopyPlugin({
       patterns: [
         {
-          from: resolveDir('../public'), // copy public文件夹
-          to: resolveDir('../dist'), // copy到 dist文件夹
-          filter: (source) => !source.includes('index.html'), // 过滤index.html
+          from: resolveDir('../public'),
+          to: resolveDir('../dist'),
+          filter: (source) => !source.includes('index.html'),
         },
       ],
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode: 'disabled', // 不启动展示打包报告的http服务器
-      generateStatsFile: isGenAnalyz, // 是否生成stats.json文件
+      analyzerMode: 'disabled',
+      generateStatsFile: isGenAnalyz,
     }),
   ],
   optimization: {
-    nodeEnv: 'production',
-    runtimeChunk: 'single', // 将运行时代码单独打包成一个文件
+    runtimeChunk: 'single',
     minimize: true,
     minimizer: [
       new CssMinimizerPlugin(),
       new TerserPlugin({
-        parallel: true, // 开启多线程压缩
+        parallel: true,
         terserOptions: {
           compress: {
-            pure_funcs: ['console.log'], // 删除console.log
+            pure_funcs: ['console.log'],
           },
         },
       }),
     ],
     splitChunks: {
-      // 代码分包
       cacheGroups: {
-        // 提取页面公共代码
         common: {
           name: 'chunk-common',
           chunks: 'all',
-          minChunks: 2, // 只要使用2次就提取出来
+          minChunks: 2,
           maxInitialRequests: 5,
-          minSize: 0, // 提取代码体积大于0就提取出来
-          priority: 1, // 提取优先级为1
-          enforce: true, // 忽略 splitChunks.minSize、splitChunks.minChunks、splitChunks.maxAsyncRequests 和 splitChunks.maxInitialRequests 选项，并始终为此缓存组创建 chunk
-          reuseExistingChunk: true, // 当前 chunk 包含是从主 bundle 中拆分出的模块，则它将被重用
+          minSize: 0,
+          priority: 1,
+          enforce: true,
+          reuseExistingChunk: true,
         },
         vendors: {
-          name: 'chunk-vendors', // 提取文件命名为chunk-vendors.js后缀和chunkhash会自动加
-          test: /[\\/]node_modules[\\/]/, // 提取node_modules代码
+          name: 'chunk-vendors',
+          test: /[\\/]node_modules[\\/]/,
           chunks: 'all',
-          priority: 2, // 提取优先级为2
-          enforce: true, // 忽略 splitChunks.minSize、splitChunks.minChunks、splitChunks.maxAsyncRequests 和 splitChunks.maxInitialRequests 选项，并始终为此缓存组创建 chunk
-          reuseExistingChunk: true, // 当前 chunk 包含是从主 bundle 中拆分出的模块，则它将被重用
+          priority: 2,
+          enforce: true,
+          reuseExistingChunk: true,
         },
       },
     },
   },
   cache: {
-    type: 'filesystem', // 缓存到文件系统中
+    type: 'filesystem',
     buildDependencies: {
-      // 下面这些配置文件发生改变时重新构建并生成缓存
       config: configFilenames.map((name) => resolveDir(name)),
     },
   },
   performance: {
-    // 编译时警告
-    hints: 'warning', // 提示形式
-    maxAssetSize: 2 * 1024 * 1024, // 总资源大小超过该值发出警告
-    maxEntrypointSize: 2 * 1024 * 1024, // 入口文件大小超过改值发出警告
+    hints: 'warning',
+    maxAssetSize: 2 * 1024 * 1024,
+    maxEntrypointSize: 2 * 1024 * 1024,
   },
 });
 
 /**
  * @see: https://github.com/stephencookdev/speed-measure-webpack-plugin/issues/167
+ * @description: 启用打包速度分析，测量打包各阶段耗时
  */
 const configWithTimeMeasures = smp.wrap(config);
 configWithTimeMeasures.plugins.unshift(
