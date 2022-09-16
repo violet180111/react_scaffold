@@ -5,3 +5,10 @@
 yarn*
 
 package-lock.json
+
+*.json
+*.html
+*.svg
+*.css
+*.less
+*.sass
