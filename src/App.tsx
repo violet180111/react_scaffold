@@ -1,4 +1,3 @@
-/* @jsxImportSource @emotion/react */
 import { Button } from 'antd';
 import type { FC, ReactElement } from 'react';
 

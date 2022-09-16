@@ -68,9 +68,9 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', 'json'], //
+    extensions: ['.ts', '.tsx', '.js', '.jsx', 'json'],
     alias: {
-      '@': resolveDir('src'), //
+      '@': resolveDir('src'),
     },
   },
   performance: {

@@ -7,8 +7,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const smp = new SpeedMeasurePlugin();
 const resolveDir = (path) => resolve(__dirname, path);
 const baseWebpackConfig = require('./webpack.base.conf');
 const { getCssRule, getJsRule } = require('./getBaseConfig');
@@ -41,16 +39,12 @@ threadLoader.warmup(
 );
 
 /**
+ * @description: 获取webpack配置
  * @param: mode - 指明是开发环境还是生产环境
  * @param: module.rules - 模块构建规则
  * @param: module.rules.test - 文件名匹配正则
  * @param: module.rules.exclude - 要排除的文件
  * @param: module.rules.use - 要使用的loader
- * @param: plugins[0] - MiniCssExtractPlugin - 抽离css为单独文件 由于SpeedMeasurePlugin的某些bug，需要在smp.wrap执行后才能往plugins加MiniCssExtractPlugin
- * @see: https://github.com/webpack-contrib/mini-css-extract-plugin
- * {
- *   filename: 生成文件路径 + 文件名
- * }
  * @param: plugins[1] - CompressionPlugin - 用于gizp压缩
  * @see: https://github.com/webpack-contrib/compression-webpack-plugin
  * {
@@ -66,12 +60,6 @@ threadLoader.warmup(
  *   from: 要copy的文件
  *   to: copy到哪里
  *   filter: 排除文件，
- * }
- * @param: plugins[3] - BundleAnalyzerPlugin - 分析打包文件大小、占比情况、各文件 Gzipped 后的大小、模块包含关系、依赖项等
- * @see: https://github.com/webpack-contrib/webpack-bundle-analyzer
- * {
- *   analyzerMode - 是否启动打包报告的http服务器
- *   generateStatsFile - 是否生成stats.json文件
  * }
  * @param: optimization.runtimeChunk - 将运行时代码单独打包成一个文件
  * @param: optimization.minimize - 将告知 webpack 使用 TerserPlugin 或其它在 optimization.minimizer定义的插件压缩代码
@@ -102,7 +90,7 @@ threadLoader.warmup(
  * @param: performance.maxEntrypointSize - 根据入口起点的最大体积，控制 webpack 生成性能提示
  */
 /** @type {import('webpack').Configuration} wepack配置代码提示 */
-const config = merge(baseWebpackConfig, {
+let config = merge(baseWebpackConfig, {
   mode: 'production',
   module: {
     rules: [getCssRule(MiniCssExtractPlugin.loader), getJsRule('thread-loader')],
@@ -123,10 +111,6 @@ const config = merge(baseWebpackConfig, {
           filter: (source) => !source.includes('index.html'),
         },
       ],
-    }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'disabled',
-      generateStatsFile: isGenAnalyz,
     }),
   ],
   optimization: {
@@ -180,14 +164,45 @@ const config = merge(baseWebpackConfig, {
 });
 
 /**
- * @see: https://github.com/stephencookdev/speed-measure-webpack-plugin/issues/167
- * @description: 启用打包速度分析，测量打包各阶段耗时
+ * @param: plugins[0] - MiniCssExtractPlugin - 抽离css为单独文件 由于SpeedMeasurePlugin的某些bug，需要在smp.wrap执行后才能往plugins加MiniCssExtractPlugin
+ * @see: https://github.com/webpack-contrib/mini-css-extract-plugin
+ * {
+ *   filename: 生成文件路径 + 文件名
+ * }
  */
-const configWithTimeMeasures = smp.wrap(config);
-configWithTimeMeasures.plugins.unshift(
-  new MiniCssExtractPlugin({
-    filename: 'assets/css/[name].[contenthash:8].css',
-  }),
-);
+const miniCssExtractPlugin = new MiniCssExtractPlugin({
+  filename: 'assets/css/[name].[contenthash:8].css',
+});
 
-module.exports = isMeaSpeed ? configWithTimeMeasures : config;
+if (isMeaSpeed) {
+  /**
+   * @see: https://github.com/stephencookdev/speed-measure-webpack-plugin/issues/167
+   * @description: 启用打包速度分析，测量打包各阶段耗时
+   */
+  const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+  const smp = new SpeedMeasurePlugin();
+  config = smp.wrap(config);
+}
+
+if (isGenAnalyz) {
+  /**
+   * @param: plugins[3] - BundleAnalyzerPlugin - 分析打包文件大小、占比情况、各文件 Gzipped 后的大小、模块包含关系、依赖项等
+   * @see: https://github.com/webpack-contrib/webpack-bundle-analyzer
+   * {
+   *   analyzerMode - 是否启动打包报告的http服务器
+   *   generateStatsFile - 是否生成stats.json文件
+   * }
+   *
+   */
+  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+  const bundleAnalyzerPlugin = new BundleAnalyzerPlugin({
+    analyzerMode: 'disabled',
+    generateStatsFile: true,
+  });
+
+  config.plugins.push(bundleAnalyzerPlugin);
+}
+
+config.plugins.unshift(miniCssExtractPlugin);
+
+module.exports = config;
