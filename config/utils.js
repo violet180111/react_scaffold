@@ -1,5 +1,8 @@
+const { resolve } = require('path');
+
 module.exports = {
-  getJsRule: (loader) => ({
+  resolveDir: (path) => resolve(process.cwd(), path),
+  getTsRule: (loader) => ({
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
     use: [loader, 'babel-loader'].filter(Boolean),

@@ -1,4 +1,3 @@
-const { resolve } = require('path');
 const { merge } = require('webpack-merge');
 const threadLoader = require('thread-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -7,18 +6,17 @@ const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const resolveDir = (path) => resolve(__dirname, path);
 const baseWebpackConfig = require('./webpack.base.conf');
-const { getCssRule, getJsRule } = require('./getBaseConfig');
+const { resolveDir, getCssRule, getTsRule } = require('./utils');
 const { IS_GEN_BUNDLE, IS_MEA_SPEED } = process.env;
 const isGenAnalyz = JSON.parse(IS_GEN_BUNDLE ?? false);
 const isMeaSpeed = JSON.parse(IS_MEA_SPEED ?? false);
 const configFilenames = [
-  'webpack.base.conf.js',
-  'webpack.dev.conf.js',
-  'webpack.prod.conf.js',
-  '../babel.config.js',
-  '../tsconfig.json',
+  'config/webpack.base.conf.js',
+  'config/webpack.dev.conf.js',
+  'config/webpack.prod.conf.js',
+  'babel.config.js',
+  'tsconfig.json',
 ];
 
 /**
@@ -93,21 +91,20 @@ threadLoader.warmup(
 let config = merge(baseWebpackConfig, {
   mode: 'production',
   module: {
-    rules: [getCssRule(MiniCssExtractPlugin.loader), getJsRule('thread-loader')],
+    rules: [getCssRule(MiniCssExtractPlugin.loader), getTsRule('thread-loader')],
   },
   plugins: [
     new CompressionPlugin({
       test: /.(js|css)$/,
       filename: '[path][base].gz',
       algorithm: 'gzip',
-      threshold: 10240,
-      minRatio: 0.8,
+      threshold: 50 * 1024,
     }),
     new CopyPlugin({
       patterns: [
         {
-          from: resolveDir('../public'),
-          to: resolveDir('../dist'),
+          from: resolveDir('public'),
+          to: resolveDir('dist'),
           filter: (source) => !source.includes('index.html'),
         },
       ],
@@ -171,7 +168,7 @@ let config = merge(baseWebpackConfig, {
  * }
  */
 const miniCssExtractPlugin = new MiniCssExtractPlugin({
-  filename: 'assets/css/[name].[contenthash:8].css',
+  filename: 'static/css/[name].[contenthash:8].css',
 });
 
 if (isMeaSpeed) {

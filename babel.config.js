@@ -19,6 +19,7 @@ module.exports = {
       '@babel/preset-react',
       {
         runtime: 'automatic',
+        // 写上这句配置之后使用emotion就可以不用在文件顶部写/* @jsxImportSource @emotion/react */
         importSource: '@emotion/react',
       },
     ],
@@ -46,7 +47,6 @@ module.exports = {
         corejs: false,
         helpers: true,
         regenerator: true,
-        useESModules: false,
       },
     ],
     ENV === 'development' && 'react-refresh/babel',

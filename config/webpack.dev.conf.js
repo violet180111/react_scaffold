@@ -1,8 +1,7 @@
-const { resolve } = require('path');
 const { merge } = require('webpack-merge');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const baseWebpackConfig = require('./webpack.base.conf');
-const { getCssRule, getJsRule } = require('./getBaseConfig');
+const { resolveDir, getCssRule, getTsRule } = require('./utils');
 
 /**
  * @param: mode - 指明环境 开发或是生产
@@ -28,14 +27,14 @@ module.exports = merge(baseWebpackConfig, {
     port: 7777,
     open: true,
     compress: true,
-    static: resolve(__dirname, '../public'),
+    static: resolveDir('public'),
     historyApiFallback: true,
     devMiddleware: {
       writeToDisk: false,
     },
   },
   module: {
-    rules: [getCssRule('style-loader'), getJsRule()],
+    rules: [getCssRule('style-loader'), getTsRule()],
   },
   plugins: [new ReactRefreshWebpackPlugin()],
 });
