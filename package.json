@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.tsx",
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack serve --config config/webpack.dev.conf.js",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.conf.js",
     "build": "cross-env NODE_ENV=production IS_GEN_BUNDLE=false IS_MEA_SPEED=false webpack --progress --config config/webpack.prod.conf.js",
     "build:bundle": "cross-env NODE_ENV=production IS_GEN_BUNDLE=true webpack --progress --config config/webpack.prod.conf.js",
     "build:speed": "cross-env NODE_ENV=production IS_MEA_SPEED=true  webpack --progress --config config/webpack.prod.conf.js",

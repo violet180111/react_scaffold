@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { Button } from 'antd';
 import type { FC, ReactElement } from 'react';
 
 const App: FC = (): ReactElement => {
+  const [count, setCount] = useState<number>(0);
+
   return (
     <div css={{ display: 'flex' }}>
-      <Button>react-hotModule-replace</Button>
-      <input type="text" name="" id="" />
+      <Button onClick={() => setCount((preCount) => preCount + 1)}>{count}</Button>
     </div>
   );
 };

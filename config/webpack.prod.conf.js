@@ -125,10 +125,10 @@ let config = merge(baseWebpackConfig, {
       }),
     ],
     splitChunks: {
+      chunks: 'all',
       cacheGroups: {
         common: {
           name: 'chunk-common',
-          chunks: 'all',
           minChunks: 2,
           maxInitialRequests: 5,
           minSize: 0,
@@ -139,7 +139,6 @@ let config = merge(baseWebpackConfig, {
         vendors: {
           name: 'chunk-vendors',
           test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
           priority: 2,
           enforce: true,
           reuseExistingChunk: true,

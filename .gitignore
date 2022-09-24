@@ -3,3 +3,5 @@
 /build
 
 yarn-*.log
+
+/config/start-up.html

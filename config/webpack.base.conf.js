@@ -92,7 +92,7 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         type: 'asset',
         generator: {
-          filename: `static/media/fonts/[name]${hash}}[ext]`,
+          filename: `static/media/fonts/[name]${hash}[ext]`,
         },
         parser: {
           dataUrlCondition: {
