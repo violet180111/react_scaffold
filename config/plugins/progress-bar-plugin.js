@@ -1,4 +1,6 @@
+const fs = require('fs');
 const { ProgressPlugin } = require('webpack');
+const { projectMarkFont } = require('../js/constants');
 
 /**
  * @description: 自定义启动(构建)进度插件
@@ -69,6 +71,7 @@ class ProgressBarPlugin {
 
     this.clear();
     progress === 1 && console.log();
+    console.log(projectMarkFont);
     console.log(output);
     progress === 1 && console.log();
   }

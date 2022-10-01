@@ -65,7 +65,7 @@ module.exports = merge(baseWebpackConfig, {
     },
     onListening: () => {
       ['SIGINT', 'SIGTERM'].forEach(function (sig) {
-        // ✨ exit gracefully
+        // ✨ 优雅地退出进程
         process.on(sig, function () {
           process.exit();
         });

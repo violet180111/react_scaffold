@@ -1,8 +1,9 @@
-const chalk = require('chalk');
 const WebpackDevServer = require('webpack-dev-server');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { resolveDir } = require('../js/utils');
 const { printInstructions, formatWebpackMessages } = require('../js/webpackDevServerUtils');
+const chalk = require('chalk');
+const paths = require('../js/paths');
 const localIPv4 = WebpackDevServer.internalIPSync('v4');
 const localIPv6 = WebpackDevServer.internalIPSync('v6');
 
@@ -21,7 +22,7 @@ class LogsPlugin {
       const messages = formatWebpackMessages(statsData);
       const isSuccessful = !messages.errors.length && !messages.warnings.length;
       const { port, https } = stats.compilation.options.devServer;
-      const rootDir = resolveDir('.');
+      const rootDir = paths.root;
       const logInfo = {
         appName: rootDir.slice(rootDir.lastIndexOf('\\') + 1),
         protocol: `${https ? 'https' : 'http'}://`,
@@ -35,10 +36,7 @@ class LogsPlugin {
         printInstructions(logInfo);
       }
 
-      // If errors exist, only show errors.
       if (messages.errors.length) {
-        // Only keep the first error. Others are often indicative
-        // of the same problem, but confuse the reader with noise.
         if (messages.errors.length > 1) {
           messages.errors.length = 1;
         }
@@ -47,12 +45,10 @@ class LogsPlugin {
         return;
       }
 
-      // Show warnings if no errors were found.
       if (messages.warnings.length) {
         console.log(chalk.yellow('Compiled with warnings.\n'));
         console.log(messages.warnings.join('\n\n'));
 
-        // Teach some ESLint tricks.
         console.log(
           '\nSearch for the ' + chalk.underline(chalk.yellow('keywords')) + ' to learn more about each warning.',
         );

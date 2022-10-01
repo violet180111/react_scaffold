@@ -5,7 +5,7 @@ module.exports = {
   getTsRule: (loader) => ({
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-    use: [loader, 'babel-loader'].filter(Boolean),
+    use: [loader, 'babel-loader?cacheDirectory'].filter(Boolean),
   }),
   getCssRule: (loader) => ({
     test: /\.css$/,
