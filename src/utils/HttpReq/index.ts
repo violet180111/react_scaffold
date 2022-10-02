@@ -5,14 +5,14 @@ import type { IHttpRequestConfig, IHttpReq, IcodeMap } from './type';
 /**
  * @description 基于umi-request封装的请求
  * @see https://github.com/umijs/umi-request/blob/master/README_zh-CN.md
- * @param url 请求地址 可只传一个url参数 例： httpReq.send('http://127.0.0.1:8081/api/xxx') 这样的意思就是默认发get请求不带任何数据
- * @param headers 自定义请求头 可不传
- * @param method 请求方式 可不传 默认get
- * @param body  要传的数据 无论是get或是post请求都是body 会自动做转换
- * @param requestType 请求数据类型 可不传 默认json 还有一种form
- * @param responseType 响应数据类型 可不传 默认json 还有text , blob , formData...
- * @param signal 一个 AbortSignal 对象实例，它可以用来 with/abort 一个 DOM 请求（暂时用不到）
- * @return promise对象
+ * @param {string} url 请求地址 可只传一个url参数 例： httpReq.send('http://127.0.0.1:8081/api/xxx') 这样的意思就是默认发get请求不带任何数据
+ * @param {Record<string, any>} headers 自定义请求头 可不传
+ * @param {string} method 请求方式 可不传 默认get
+ * @param {Record<string, any>} body  要传的数据 无论是get或是post请求都是body 会自动做转换
+ * @param {string} requestType 请求数据类型 可不传 默认json 还有一种form
+ * @param {string} responseType 响应数据类型 可不传 默认json 还有text , blob , formData...
+ * @param {AbortSignal} signal 一个 AbortSignal 对象实例，它可以用来 with/abort 一个 DOM 请求（暂时用不到）
+ * @return {Promise<any>} promise对象
  */
 class HttpReq implements IHttpReq {
   private static readonly codeMap: IcodeMap = {
