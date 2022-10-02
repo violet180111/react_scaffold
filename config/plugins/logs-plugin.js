@@ -1,6 +1,6 @@
 const WebpackDevServer = require('webpack-dev-server');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { resolveDir } = require('../js/utils');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { printInstructions, formatWebpackMessages } = require('../js/webpackDevServerUtils');
 const chalk = require('chalk');
 const paths = require('../js/paths');
@@ -21,13 +21,14 @@ class LogsPlugin {
       });
       const messages = formatWebpackMessages(statsData);
       const isSuccessful = !messages.errors.length && !messages.warnings.length;
-      const { port, https } = stats.compilation.options.devServer;
+      const { port, https, historyApiFallback } = stats.compilation.options.devServer;
       const rootDir = paths.root;
       const logInfo = {
         appName: rootDir.slice(rootDir.lastIndexOf('\\') + 1),
         protocol: `${https ? 'https' : 'http'}://`,
         host: 'localhost',
         port,
+        historyApiFallback,
         localIPv4,
         localIPv6,
       };

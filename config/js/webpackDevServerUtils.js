@@ -1,13 +1,14 @@
 const url = require('url');
 const chalk = require('chalk');
-const { projectMark } = require('./constants');
+const { projectMark, projectMarkFont } = require('./constants');
 
 function printInstructions(logInfo = {}) {
-  const { appName, protocol, host, port, localIPv4, localIPv6 } = logInfo;
+  const { appName, protocol, host, historyApiFallback, port, localIPv4, localIPv6 } = logInfo;
   const getUrl = (info, isIPv6 = false) => (isIPv6 ? `${protocol}[${info}]:${port}` : `${protocol}${info}:${port}`);
   const showTitleWithGreenBright = (title) => chalk.greenBright(chalk.bold(title));
   const showContentWithCyanBright = (content) => chalk.cyanBright(chalk.bold(content));
 
+  console.log(projectMarkFont);
   console.log(`You can now view ${chalk.bold(appName)} in the browser.`);
   console.log();
   console.log(
@@ -26,11 +27,12 @@ function printInstructions(logInfo = {}) {
         'On Your Network (IPv6):',
       )}  ${showContentWithCyanBright(getUrl(localIPv6, true))}`,
     );
-  console.log(
-    `  ${showTitleWithGreenBright(`[${projectMark}]`)} ${showTitleWithGreenBright(
-      '404s will fallback to',
-    )} ${showContentWithCyanBright("'/index.html'")}`,
-  );
+  historyApiFallback &&
+    console.log(
+      `  ${showTitleWithGreenBright(`[${projectMark}]`)} ${showTitleWithGreenBright(
+        '404s will fallback to',
+      )} ${showContentWithCyanBright("'/index.html'")}`,
+    );
   console.log();
   console.log('Note that the development build is not optimized.');
   console.log(`To create a production build, use ${chalk.cyan('npm run build')}.`);
