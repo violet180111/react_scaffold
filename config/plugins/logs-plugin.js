@@ -47,9 +47,6 @@ class LogsPlugin {
       }
 
       if (messages.warnings.length) {
-        console.log(chalk.yellow('Compiled with warnings.\n'));
-        console.log(messages.warnings.join('\n\n'));
-
         console.log(
           '\nSearch for the ' + chalk.underline(chalk.yellow('keywords')) + ' to learn more about each warning.',
         );

@@ -36,7 +36,7 @@ module.exports = merge(baseWebpackConfig, {
   devServer: {
     hot: true,
     port: 7777,
-    // open: true,
+    open: true,
     compress: true,
     static: paths.public,
     historyApiFallback: true,
