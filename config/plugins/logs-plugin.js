@@ -1,5 +1,5 @@
 const WebpackDevServer = require('webpack-dev-server');
-const { resolveDir } = require('../js/utils');
+const { resolveDir, clear } = require('../js/utils');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { printInstructions, formatWebpackMessages } = require('../js/webpackDevServerUtils');
 const chalk = require('chalk');
@@ -32,6 +32,8 @@ class LogsPlugin {
         localIPv4,
         localIPv6,
       };
+
+      clear();
 
       if (isSuccessful) {
         printInstructions(logInfo);

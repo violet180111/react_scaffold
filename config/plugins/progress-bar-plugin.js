@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { clear } = require('../js/utils');
 const { ProgressPlugin } = require('webpack');
 
 /**
@@ -55,23 +56,14 @@ class ProgressBarPlugin {
   }
 
   /**
-   * @description: 清除控制台
-   */
-  clear() {
-    process.stdout.write(process.platform === 'win32' ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H');
-  }
-
-  /**
    * @description: 更新进度
    * @param {number} progress 进度
    */
   update(progress = 0) {
     const output = this.getOutput(progress);
 
-    this.clear();
-    progress === 1 && console.log();
+    clear();
     console.log(output);
-    progress === 1 && console.log();
   }
 }
 

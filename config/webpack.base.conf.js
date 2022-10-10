@@ -72,32 +72,6 @@ module.exports = {
             maxSize: 10 * 1024,
           },
         },
-        resourceQuery: /url/,
-      },
-      {
-        test: /\.svg$/,
-        resourceQuery: { not: [/url/] },
-        use: [
-          {
-            /**
-             * @description svg作为ReactComponent导入使用
-             * @see https://react-svgr.com/docs/webpack/
-             */
-            loader: '@svgr/webpack',
-            options: {
-              prettier: false,
-              svgo: false,
-              svgoConfig: {
-                plugins: [{ removeViewBox: false }],
-              },
-              titleProp: true,
-              ref: true,
-            },
-          },
-        ],
-        issuer: {
-          and: [/\.(ts|tsx)$/],
-        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
