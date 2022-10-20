@@ -63,7 +63,7 @@ class ProgressBarPlugin {
     const output = this.getOutput(progress);
 
     clear();
-    console.log(output);
+    progress !== 1 && console.log(output);
   }
 }
 

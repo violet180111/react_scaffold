@@ -33,8 +33,6 @@ class LogsPlugin {
         localIPv6,
       };
 
-      clear();
-
       if (isSuccessful) {
         printInstructions(logInfo);
       }
