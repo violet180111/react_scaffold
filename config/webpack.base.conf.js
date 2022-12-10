@@ -1,9 +1,17 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const paths = require('./js/paths');
+const { resolveDir } = require('./js/utils');
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = process.env.NODE_ENV === 'development';
 const hash = isProd ? '.[contenthash:8]' : ''; // 计算hash值也会损耗一定性能
+const configFilenames = [
+  'config/webpack.base.conf.js',
+  'config/webpack.dev.conf.js',
+  'config/webpack.prod.conf.js',
+  'babel.config.js',
+  'tsconfig.json',
+];
 /**
  * 更多内容 @see: https://webpack.docschina.org/
  * @param entry - 入口文件路径
@@ -36,6 +44,8 @@ const hash = isProd ? '.[contenthash:8]' : ''; // 计算hash值也会损耗一�
  * @param resolve.modules - 告诉 webpack 解析模块时应该搜索的目录
  * @param resolve.extensions - 文件匹配优先级 例如import xxx from './test' 首先是找 test.ts 再是 test.tsx
  * @param resolve.alias - 路径别名 @/ === src/
+ * @param cache.type - 缓存位置，生产环境一般是缓存到文件系统以便加快打包速度
+ * @param cache.buildDependencies.config - 配置文件发生改变时重新构建并生成缓存
  * @param performance.hint - 性能提示形式
  */
 /** @type {import('webpack').Configuration} wepack配置代码提示 */
@@ -132,6 +142,12 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx', 'json'],
     alias: {
       '@': paths.src,
+    },
+  },
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: configFilenames.map((name) => resolveDir(name)),
     },
   },
   performance: {

@@ -13,13 +13,6 @@ const paths = require('./js/paths');
 const { IS_GEN_BUNDLE, IS_MEA_SPEED } = process.env;
 const isGenAnalyz = JSON.parse(IS_GEN_BUNDLE ?? false);
 const isMeaSpeed = JSON.parse(IS_MEA_SPEED ?? false);
-const configFilenames = [
-  'config/webpack.base.conf.js',
-  'config/webpack.dev.conf.js',
-  'config/webpack.prod.conf.js',
-  'babel.config.js',
-  'tsconfig.json',
-];
 
 /**
  * @see https://github.com/webpack-contrib/thread-loader
@@ -82,8 +75,6 @@ threadLoader.warmup(
  * @param splitChunks.cacheGroups.xxx.priority - 提取优先级
  * @param splitChunks.cacheGroups.xxx.enforce - 忽略 splitChunks.minSize、splitChunks.minChunks、splitChunks.maxAsyncRequests 和 splitChunks.maxInitialRequests 选项，并始终为此缓存组创建 chunk
  * @param splitChunks.cacheGroups.xxx.reuseExistingChunk - 表示是否使用已有的 chunk，true 则表示如果当前的 chunk 包含的模块已经被抽取出去了，那么将不会重新生成新的
- * @param cache.type - 缓存位置，生产环境一般是缓存到文件系统以便加快打包速度
- * @param cache.buildDependencies.config - 配置文件发生改变时重新构建并生成缓存
  * @param performance - webpack 如何通知「资源(asset)和入口起点超过指定文件限制」
  * @param performance.hints - 性能提示形式
  * @param performance.maxAssetSize - 根据单个资源体积(单位: bytes)，控制 webpack 生成性能提示
@@ -150,12 +141,6 @@ let config = merge(baseWebpackConfig, {
           reuseExistingChunk: true,
         },
       },
-    },
-  },
-  cache: {
-    type: 'filesystem',
-    buildDependencies: {
-      config: configFilenames.map((name) => resolveDir(name)),
     },
   },
   performance: {

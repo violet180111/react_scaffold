@@ -1,9 +1,3 @@
-const browserslist = {
-  production: ['>0.2%', 'not dead', 'not op_mini all'],
-  development: ['last 1 chrome version', 'last 1 firefox version', 'last 1 safari version'],
-};
-const ENV = process.env.NODE_ENV;
-
 /**
  * 更多内容 @see: https://webpack.docschina.org/
  * @param presets - babel插件集合的预设,包含某一部分的插件plugin
