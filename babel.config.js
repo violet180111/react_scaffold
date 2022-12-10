@@ -47,21 +47,6 @@ module.exports = {
     '@babel/preset-typescript',
   ],
   plugins: [
-    // 按需引入antd css
-    // 配置默认使用emotion语法 使用less的话可以把下面的换成
-    // {
-    //   libraryName: 'antd',
-    //   libraryDirectory: 'es',
-    //   style: true,
-    // },
-    [
-      'import',
-      {
-        libraryName: 'antd',
-        libraryDirectory: 'es',
-        style: 'css',
-      },
-    ],
     [
       '@babel/plugin-transform-runtime',
       {
